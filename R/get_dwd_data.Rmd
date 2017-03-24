@@ -2,20 +2,23 @@
 title: "Get DWD data"
 author: "Heike Sprenger"
 date: "March 23, 2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r load packages}
+library(plyr)
 library(devtools)
-install_github("HeikeSp/RgetDWDdata")
+#install_github("HeikeSp/RgetDWDdata")
 library(RgetDWDdata)
 ```
 
-```{r}
+```{r get data for Potsdam}
 DWDstations <- getDWDstations()
 # test <- getDWDdata('03987') # Potsdam
 # test$MESS_DATUM
@@ -23,5 +26,20 @@ DWDstations <- getDWDstations()
 
 hist_potsdam <- getDWDdata_monthly('03987', historisch = TRUE)
 recent_potsdam <- getDWDdata_monthly('03987', historisch = FALSE)
+
+class(hist_potsdam$MESS_DATUM_BEGINN)
+head(format(hist_potsdam$MESS_DATUM_BEGINN, "%m"))
+hist_potsdam$month_num <- format(hist_potsdam$MESS_DATUM_BEGINN, "%m")
+hist_potsdam$month_char <- format(hist_potsdam$MESS_DATUM_BEGINN, "%M")
+hist_potsdam$month_char <- factor(hist_potsdam$month_char, 
+																	levels = c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))
+levels(hist_potsdam$month_char)
+
+hist_potsdam$year <- format(hist_potsdam$MESS_DATUM_BEGINN, "%Y")
+```
+
+```{r summarize per month}
+boxplot(hist_potsdam$LUFTTEMPERATUR ~ hist_potsdam$month_char)
+boxplot(hist_potsdam$LUFTTEMPERATUR_MAXIMUM ~ hist_potsdam$month_char)
 ```
 
