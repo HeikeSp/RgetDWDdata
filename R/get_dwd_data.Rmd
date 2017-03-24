@@ -1,0 +1,27 @@
+---
+title: "Get DWD data"
+author: "Heike Sprenger"
+date: "March 23, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(devtools)
+install_github("HeikeSp/RgetDWDdata")
+library(RgetDWDdata)
+```
+
+```{r}
+DWDstations <- getDWDstations()
+# test <- getDWDdata('03987') # Potsdam
+# test$MESS_DATUM
+# plot(test$MESS_DATUM, test$LUFTTEMPERATUR)
+
+hist_potsdam <- getDWDdata_monthly('03987', historisch = TRUE)
+recent_potsdam <- getDWDdata_monthly('03987', historisch = FALSE)
+```
+
